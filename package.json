@@ -1,10 +1,11 @@
 {
   "name": "vite-plugin-xdm",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "scripts": {
     "dev": "npm run build -- --watch",
     "build": "tsup src/index.ts src/frontmatter.ts --dts --sourcemap --format cjs,esm --no-splitting --target es2020",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
+    "release": "node scripts/release.cjs",
     "prepublishOnly": "npm run build",
     "postpublish": "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag v$PACKAGE_VERSION && git push --tags",
     "lint": "eslint --ignore-pattern 'node_modules'  --ignore-pattern 'dist' . --ext .ts"
@@ -37,7 +38,6 @@
   "bugs": "https://github.com/maximomussini/vite-plugin-xdm/issues",
   "dependencies": {
     "@rollup/pluginutils": "^4.1.1",
-    "D": "^1.0.0",
     "js-yaml": "^4.1",
     "source-map": "^0.7.3",
     "toml": "^3.0"
@@ -49,10 +49,16 @@
     "@mussi/eslint-config": "^0.5.1",
     "@types/estree": "^0.0.46",
     "@types/js-yaml": "^4.0.0",
+    "chalk": "^4.1.2",
+    "conventional-changelog-cli": "^2.1.1",
+    "enquirer": "^2.3.6",
     "eslint": "^7.32.0",
     "estree-util-is-identifier-name": "^1.1.0",
     "estree-util-value-to-estree": "^1.0.0",
+    "execa": "^5.1.1",
+    "minimist": "^1.2.5",
     "remark-frontmatter": "^4.0.0",
+    "semver": "^7.3.5",
     "tsup": "^4.14.0",
     "typescript": "^4.1.3",
     "unified": "^10.1.0",
