@@ -58,7 +58,7 @@ Promises are also supported with `rehypePlugins`.
 
 ## Acknowledgements
 
-- [xdm] — Excellent library, really well documented.
+- [xdm] — Excellent library, fast, and very well documented.
 
 ## License
 
