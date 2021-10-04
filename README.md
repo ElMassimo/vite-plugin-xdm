@@ -44,10 +44,13 @@ export default defineConfig({
   plugins: [
     xdm(
       remarkPlugins: [
-        import('remark-frontmatter').then(mod => mod.default),
+        'remark-frontmatter',
         import('remark-mdx-frontmatter').then(mod =>
           [(mod.default || mod).remarkMdxFrontmatter, { name: 'frontmatter' }]
         ),
+      ],
+      rehypePlugins: [
+        ['@mapbox/rehype-prism', { alias: { markup: ['html', 'vue'] } }],
       ],
     ),
   ],

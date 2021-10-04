@@ -22,10 +22,6 @@
     ".": {
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
-    },
-    "./frontmatter": {
-      "import": "./dist/frontmatter.js",
-      "require": "./dist/frontmatter.cjs"
     }
   },
   "funding": "https://github.com/sponsors/ElMassimo",

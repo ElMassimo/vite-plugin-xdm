@@ -5,9 +5,13 @@ import type { Pluggable } from 'unified'
 import { VFile } from 'vfile'
 import { SourceMapGenerator } from 'source-map'
 import { compact } from './utils'
-export type { default as FrontmatterPlugin } from './frontmatter'
 
-type PluginLike = null | undefined | false | Pluggable | Promise<Pluggable>
+export type ResolvePluginFn = (mod: any) => Pluggable
+export type AwaitedPluggableLike = null | undefined | false | Pluggable
+export type PluggableLike = AwaitedPluggableLike | Promise<Pluggable>
+export type PluginLike = PluggableLike | string | [string, any]
+
+export type { Pluggable }
 
 interface CustomOptions {
   /**
@@ -21,6 +25,7 @@ interface CustomOptions {
   rehypePlugins?: PluginLike[]
 }
 
+export type { CompileOptions }
 export type PluginOptions = Omit<CompileOptions, 'remarkPlugins' | 'rehypePlugins'> & CustomOptions
 
 export type XdmProcessor = ReturnType<typeof createFormatAwareProcessors>
@@ -67,5 +72,24 @@ export default function VitePluginXDM (options: PluginOptions = {}) {
 
 // Resolve plugins that might need an async import in CJS.
 async function resolvePlugins (plugins: PluginLike[]) {
-  return compact<Pluggable>(await Promise.all(plugins))
+  return compact<Pluggable>(await Promise.all(plugins.map(resolvePlugin)))
+}
+
+async function resolvePlugin (plugin: PluginLike): Promise<AwaitedPluggableLike> {
+  if (isString(plugin)) return await importPlugin(plugin)
+  if (!plugin) return plugin
+  if (isStringPlugin(plugin)) return await importPlugin(...plugin)
+  return plugin
+}
+
+async function importPlugin (pkgName: string, ...options: any[]): Promise<Pluggable> {
+  return [await import(pkgName).then(m => m.default), ...options]
+}
+
+function isString (val: any): val is string {
+  return typeof val === 'string'
+}
+
+function isStringPlugin (val: any): val is [string, any] {
+  return Array.isArray(val) && isString(val[0])
 }
